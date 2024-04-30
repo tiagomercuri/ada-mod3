@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: transaction-producer-service
+spec:
+  selector:
+    app: transaction-producer
+  ports:
+  - name: http
+    protocol: TCP
+    port: 8080
+    targetPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fraud-validator-consumer-service
+spec:
+  selector:
+    app: fraud-validator-consumer
+  ports:
+  - name: http
+    protocol: TCP
+    port: 8080
+    targetPort: 8080

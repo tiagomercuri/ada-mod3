@@ -1,0 +1,5 @@
+FROM python:3.8-slim
+WORKDIR /app
+COPY ../src/fraud-validator-consumer.py /app
+RUN pip install pika redis minio
+CMD ["python", "./fraud-validator-consumer.py"]

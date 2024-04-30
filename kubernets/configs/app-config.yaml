@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  minio-host: "minio-console-service.default.svc.cluster.local"
+  minio-bucket: "relatorio"

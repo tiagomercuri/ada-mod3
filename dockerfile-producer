@@ -1,0 +1,6 @@
+FROM python:3.8-slim
+WORKDIR /app
+COPY ../src/transaction-producer.py /app/
+COPY ../src/transaction.json /app/
+RUN pip install pika
+CMD ["python", "./transaction-producer.py"]

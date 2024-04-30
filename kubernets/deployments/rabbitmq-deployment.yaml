@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+      - name: rabbitmq
+        image: rabbitmq:3-management
+        env: 
+        - name: RABBITMQ_DEFAULT_USER
+          valueFrom:
+            secretKeyRef:
+              name: rabbitmq-secret
+              key: rabbitmq-username
+        - name: RABBITMQ_DEFAULT_PASS
+          valueFrom:
+            secretKeyRef:
+              name: rabbitmq-secret
+              key: rabbitmq-password
+        - name: RABBITMQ_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: rabbitmq-config
+              key: rabbitmq-port
+        - name: MANAGEMENT_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: rabbitmq-config
+              key: management-port
+        ports:
+        - containerPort: 15672 
+        - containerPort: 5672 
+

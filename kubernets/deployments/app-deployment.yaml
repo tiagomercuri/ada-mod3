@@ -1,0 +1,106 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transaction-producer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: transaction-producer
+  template:
+    metadata:
+      labels:
+        app: transaction-producer
+    spec:
+      containers:
+      - name: transaction-producer
+        image: tiagomercuri/transaction-producer:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: RABBITMQ_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: rabbitmq-config
+              key: rabbitmq-host
+        - name: RABBITMQ_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: rabbitmq-config
+              key: rabbitmq-port
+      imagePullSecrets:
+      - name: regcred
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fraud-validator-consumer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fraud-validator-consumer
+  template:
+    metadata:
+      labels:
+        app: fraud-validator-consumer
+    spec:
+      containers:
+      - name: fraud-validator-consumer
+        image: tiagomercuri/fraud-validator-consumer:latest
+        ports:
+        - containerPort: 8081
+        env:
+        - name: MINIO_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: minio-secret
+              key: access-key
+        - name: MINIO_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: minio-secret
+              key: secret-key
+        - name: MINIO_ROOT_USER
+          valueFrom:
+            secretKeyRef:
+              name: minio-secret
+              key: root-user
+        - name: MINIO_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: minio-secret
+              key: root-pwd
+        - name: MINIO_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: minio-host
+        - name: MINIO_BUCKET
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: minio-bucket
+        - name: REDIS_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: redis-config
+              key: redis-host
+        - name: REDIS_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: redis-config
+              key: redis-port
+        - name: RABBITMQ_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: rabbitmq-config
+              key: rabbitmq-host
+        - name: RABBITMQ_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: rabbitmq-config
+              key: rabbitmq-port
+      imagePullSecrets:
+      - name: regcred
