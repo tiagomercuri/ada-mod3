@@ -3,7 +3,7 @@ kind: PersistentVolume
 metadata:
   name: redis-pv
 spec:
-  storageClassName: hostpv
+  storageClassName: hostpatch
   capacity:
     storage: 1Gi
   accessModes:
